@@ -153,12 +153,7 @@
 				that.renderThisLast(that.knotBeingDragged);	
 				that.refresh();
 			} else {
-				// Didn't click on existing, create new
-				that.knots.push({
-					x: evt.offsetX,
-					y: evt.offsetY
-				});
-				that.refresh();
+				that.addKnot([evt.offsetX, evt.offsetY]);
 			}
 		});
 		canvas.bind('mousemove', function (evt) {
@@ -181,10 +176,14 @@
 
 	function createRandomKnotsInsideArea() {
 		for (var i = 0; i < 8; i++) {
-			this.knots.push({
+			this.addKnot([
+				this.settings.width * i/8,
+				this.settings.height * (0.4 + Math.random() * 0.2)
+			]);
+/*			this.knots.push({
 				x : this.settings.width * i/8,
 				y : this.settings.height * (0.4 + Math.random() * 0.2)
-			});
+			});*/
 		}
 	}
 
@@ -228,6 +227,10 @@
 	}
 
 	function refresh() {
+		if (!this.context) {
+			return;
+		}
+
 		this.drawEnclosure();
 		for (var i = 0; i < this.knots.length; i++) {
 			this.drawKnot(this.knots[i]);
@@ -270,6 +273,14 @@
 		this.context.closePath();
 	}
 
+	function addKnot(pos) {
+		this.knots.push({
+			x: pos[0],
+			y: pos[1]
+		});
+		this.refresh();
+	}
+
 	function createEditor(canvas, settings) {
 		var editor = {
 			knotRadius: 10,
@@ -290,7 +301,8 @@
 			drawEnclosure: drawEnclosure,
 			knotMouseEventRefersTo: knotMouseEventRefersTo,
 			bindMouseEvents: bindMouseEvents,
-			createRandomKnotsInsideArea: createRandomKnotsInsideArea
+			createRandomKnotsInsideArea: createRandomKnotsInsideArea,
+			addKnot: addKnot
 		};
 		return editor;
 	}
@@ -311,7 +323,16 @@
 				$(this).append(canvas);
 
 				var editor = createEditor(canvas, settings);
-				editor.createRandomKnotsInsideArea();
+
+				if (options && options.initialKnots) {
+					console.log(options);
+					for (var i = 0; i < options.initialKnots.length; i++) {
+						editor.addKnot(options.initialKnots[i]);
+					}
+				} else {
+					editor.createRandomKnotsInsideArea();
+				}
+
 				editor.initCanvas();
 				editor.bindMouseEvents($(canvas));
 				editor.refresh();

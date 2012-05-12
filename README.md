@@ -20,3 +20,15 @@ Init the widget like so:
     $('#foo').splineEditor();
 
 Naturally you need to include the plugin and the dependencies jquery, underscore and sylvester. Please see [example.html](https://github.com/Bemmu/jquery-spline-editor/blob/master/example.html) on how to do this.
+
+##Defining initial knots
+
+You can choose the initial knots (also known as control points) by passing in the initialKnots option.
+
+			$('#foo').splineEditor({
+				initialKnots: [
+					[100, 140],
+					[160, 100],
+					[220, 140]
+				]
+			});
