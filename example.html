@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Spline Editor example</title>
+		<script src="jquery.min.js"></script>
+		<script src="underscore-min.js"></script> <!-- filter, map etc. -->
+		<script src="sylvester.js"></script> <!-- matrix inverse -->
+		<script src="spline-editor.js"></script>
+		<style>
+			div {
+				border:solid 1px black;
+				margin:20px;
+				width:320px;
+				height:256px; // Amiga nostalgia
+			}
+		</style>
+	</head>
+	<body>
+		Drag the control points around.
+		<div id="splineEditorDiv"></div>
+		<div id="splineEditorDiv2"></div>
+		<script>
+			$('#splineEditorDiv, #splineEditorDiv2').splineEditor();
+		</script>
+
+		<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+	</body>
+</html>
