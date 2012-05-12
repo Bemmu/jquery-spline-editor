@@ -88,12 +88,9 @@
 		context.fill();
 	}
 
-	function drawEnclosure() {
+	function clearBackground() {
 		var context = this.context;
 		context.fillStyle = this.settings.backgroundColor;
-		context.strokeStyle = 'black';
-		context.lineWidth = 1;
-		context.strokeRect(0, 0, this.settings.width, this.settings.height);
 		context.fillRect(0, 0, this.settings.width, this.settings.height);
 	}
 
@@ -256,12 +253,22 @@
 		return y;
 	}
 
+	function drawPlayhead() {
+		this.context.strokeStyle = "black";
+		this.context.lineWidth = 2;
+		this.context.beginPath();		
+		this.context.moveTo(this.playheadX, 0);
+		this.context.lineTo(this.playheadX, this.settings.height);
+		this.context.stroke();
+		this.context.closePath();				
+	}
+
 	function refresh() {
 		if (!this.context) {
 			return;
 		}
 
-		this.drawEnclosure();
+		this.clearBackground();
 		for (var i = 0; i < this.knots.length; i++) {
 			this.drawKnot(this.knots[i]);
 		}
@@ -279,6 +286,10 @@
 		}
 		this.context.stroke();
 		this.context.closePath();
+
+		if (this.playheadVisible) {
+			this.drawPlayhead();
+		}
 	}
 
 	function addKnot(pos) {
@@ -286,6 +297,21 @@
 			x: pos[0],
 			y: pos[1]
 		});
+		this.refresh();
+	}
+
+	function showPlayhead() {
+		this.playheadVisible = true;
+		this.refresh();
+	}
+
+	function hidePlayhead() {
+		this.playheadVisible = false;
+		this.refresh();
+	}
+
+	function setPlayheadX(x) {
+		this.playheadX = x;
 		this.refresh();
 	}
 
@@ -297,6 +323,8 @@
 			knotBeingHovered: null,
 			mouseXRelativeToKnotAtStartOfDrag: null,
 			mouseYRelativeToKnotAtStartOfDrag: null,
+			playheadVisible: false,
+			playheadX: 20, // to be reasonably sure it's initially visible
 			canvas: canvas,
 			context: null,
 			refresh: refresh,
@@ -306,12 +334,16 @@
 			knotsUnderPoint: knotsUnderPoint,
 			renderThisLast: renderThisLast,
 			computeFirstDerivativesAtKnotPoints: computeFirstDerivativesAtKnotPoints,
-			drawEnclosure: drawEnclosure,
+			clearBackground: clearBackground,
 			knotMouseEventRefersTo: knotMouseEventRefersTo,
 			bindMouseEvents: bindMouseEvents,
 			createRandomKnotsInsideArea: createRandomKnotsInsideArea,
 			addKnot: addKnot,
-			getY: getY
+			getY: getY,
+			showPlayhead: showPlayhead,
+			hidePlayhead: hidePlayhead,
+			setPlayheadX: setPlayheadX,
+			drawPlayhead: drawPlayhead
 		};
 		return editor;
 	}
@@ -353,6 +385,21 @@
 			} else {
 				console.log('Spline editor error: Asked Y from ' + this.length + ' widgets.');
 			}
+		},
+		showPlayhead: function () {
+			return this.each(function () {
+				$(this).data('editor').showPlayhead();
+			});			
+		},
+		setPlayheadX: function (x) {
+			return this.each(function () {
+				$(this).data('editor').setPlayheadX(x);
+			});			
+		},
+		hidePlayhead: function () {
+			return this.each(function () {
+				$(this).data('editor').hidePlayhead();
+			});			
 		}
 	}
 

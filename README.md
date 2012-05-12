@@ -13,6 +13,8 @@ jQuery widget for editing cubic splines that wrap around. Useful at least for co
 
 [Reading the computed y-values](http://www.bemmu.com/jquery-spline-editor/example3.html)
 
+[Showing the playhead and controlling an animation](http://www.bemmu.com/jquery-spline-editor/example4.html)
+
 ##Basic usage
 
 The widget needs a div to live in, with an explicitly defined size so the canvas element that gets created inside of it knows how big to be.
@@ -45,6 +47,10 @@ To get what the interpolated y is at some point:
 	var y = $('#foo').splineEditor('getY', x);
 
 To animate based on the data, you would start a setInterval and then read each y for each frame.
+
+##The playhead
+
+When using the editor to control an animation, you might want to show the user where the animation is currently at, similar to how Adobe Flash shows a playhead as the animation is playing. You can show a black line at a certain x pos by using showPlayhead, setPlayheadX and hidePlayhead. See [example4.html](http://www.bemmu.com/jquery-spline-editor/example4.html).
 
 ##Was this useful for you?
 

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Spline Editor example</title>
+		<script src="jquery.min.js"></script>
+		<script src="underscore-min.js"></script> <!-- filter, map etc. -->
+		<script src="sylvester.js"></script> <!-- matrix inverse -->
+		<script src="spline-editor.js"></script>
+		<style>
+			div {
+				border:solid 1px black;
+				margin:20px;
+				width:320px;
+				height:256px;
+			}
+			img {
+				position: absolute;
+				left: 360px;
+				width: 100px;
+			}
+		</style>
+	</head>
+	<body>
+		<img src="nyan-cat.gif" alt="Nyan cat">
+		<div id="splineEditorDiv"></div>
+		<script>
+
+			$('div').splineEditor({
+				initialKnots: [
+					[100, 140],
+					[160, 100],
+					[220, 140]
+				]
+			});
+
+			$('div').splineEditor('showPlayhead');
+			var x = 0;
+
+			var lastTime = new Date().getTime();
+			var speed = 0.10;
+
+			setInterval(function () {
+
+				// This is smoother than incrementing directly
+				var now = new Date().getTime();
+				var elapsed = now - lastTime;
+				lastTime = now;
+
+				x += elapsed * speed;
+				if (x > 320) {
+					x -= 320;
+				}
+				$('div').splineEditor('setPlayheadX', x);
+
+				var y = $('div').splineEditor('getY', x);
+				$('img').css('top', y + 'px')
+			}, 30);
+		</script>
+	</body>
+</html>
