@@ -8,7 +8,9 @@ jQuery widget for editing cubic splines that wrap around. Useful at least for co
 ##Examples
 
 [Basic init with random knots](http://www.bemmu.com/jquery-spline-editor/example.html)
+
 [Init with chosen knots](http://www.bemmu.com/jquery-spline-editor/example2.html)
+
 [Reading the computed y-values](http://www.bemmu.com/jquery-spline-editor/example3.html)
 
 ##Basic usage
@@ -46,4 +48,4 @@ To animate based on the data, you would start a setInterval and then read each y
 
 ##Was this useful for you?
 
-If you found this useful, I'd love to hear from you.Drop me a line at me@bemmu.com
+If you found the editor widget useful, I'd love to hear from you.Drop me a line at me@bemmu.com
