@@ -226,16 +226,11 @@
 		this.context = this.canvas.getContext('2d');
 	}
 
-	function refresh() {
-		if (!this.context) {
-			return;
-		}
+	// Bottleneck. If this script seems too slow for your
+	// purposes, look into storing sortedByX and firstDerivativeMatrix
+	// and only recomputing them when needed.
 
-		this.drawEnclosure();
-		for (var i = 0; i < this.knots.length; i++) {
-			this.drawKnot(this.knots[i]);
-		}
-
+	function getY(x) {
 		var sortedByX = _.sortBy(this.knots, 'x');
 
 		// If several knots have same X, ignore all but one
@@ -257,12 +252,25 @@
 		}
 		var sortedByX = _.union([firstMirroredKnot], sortedByX, [lastMirroredKnot]);
 		var firstDerivativeMatrix = this.computeFirstDerivativesAtKnotPoints(sortedByX);
+		var y = cubicSplineAtX(x, sortedByX, firstDerivativeMatrix);
+		return y;
+	}
+
+	function refresh() {
+		if (!this.context) {
+			return;
+		}
+
+		this.drawEnclosure();
+		for (var i = 0; i < this.knots.length; i++) {
+			this.drawKnot(this.knots[i]);
+		}
 
 		this.context.strokeStyle = "rgb(30,30,128)";
 		this.context.lineWidth = 3;
 		this.context.beginPath();
 		for (var x = 0; x < this.settings.width; x++) {
-			var y = cubicSplineAtX(x, sortedByX, firstDerivativeMatrix);
+			var y = this.getY(x);
 			if (x == 0) {
 				this.context.moveTo(x, y);
 			} else {
@@ -302,7 +310,8 @@
 			knotMouseEventRefersTo: knotMouseEventRefersTo,
 			bindMouseEvents: bindMouseEvents,
 			createRandomKnotsInsideArea: createRandomKnotsInsideArea,
-			addKnot: addKnot
+			addKnot: addKnot,
+			getY: getY
 		};
 		return editor;
 	}
@@ -325,7 +334,6 @@
 				var editor = createEditor(canvas, settings);
 
 				if (options && options.initialKnots) {
-					console.log(options);
 					for (var i = 0; i < options.initialKnots.length; i++) {
 						editor.addKnot(options.initialKnots[i]);
 					}
@@ -338,6 +346,13 @@
 				editor.refresh();
 				$(this).data('editor', editor);
 			});			
+		},
+		getY: function (x) {
+			if (this.length === 1) {
+				return $(this[0]).data('editor').getY(x);
+			} else {
+				console.log('Spline editor error: Asked Y from ' + this.length + ' widgets.');
+			}
 		}
 	}
 

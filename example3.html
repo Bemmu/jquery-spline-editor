@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Spline Editor example</title>
+		<script src="jquery.min.js"></script>
+		<script src="underscore-min.js"></script> <!-- filter, map etc. -->
+		<script src="sylvester.js"></script> <!-- matrix inverse -->
+		<script src="spline-editor.js"></script>
+		<style>
+			div {
+				border:solid 1px black;
+				margin:20px;
+				width:320px;
+				height:256px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="splineEditorDiv"></div>
+		<span id="y-value"></span>
+		<script>
+			$('div').splineEditor({
+				initialKnots: [
+					[100, 140],
+					[160, 100],
+					[220, 140]
+				]
+			});
+
+			setInterval(function () {
+				var x = 120;
+				var y = $('div').splineEditor('getY', x);
+				$('#y-value').text('Interpolated value at ' + x + ' is ' + y);
+			}, 50);
+		</script>
+	</body>
+</html>
